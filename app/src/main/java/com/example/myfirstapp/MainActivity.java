@@ -69,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    public String getQuotes()
-//    {
-//        HttpURLConnection connection = HttpURLConnection
-//        return "";
-//    }
+    public String getQuotes()
+    {
+        HttpURLConnection connection = HttpURLConnection
+        return "";
+    }
 }
