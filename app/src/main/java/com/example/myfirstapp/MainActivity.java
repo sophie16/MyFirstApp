@@ -61,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     /** Called when the user taps the Send button */
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
+//    public void sendMessage(View view) {
+//        Intent intent = new Intent(this, DisplayMessageActivity.class);
+//        String message = editText.getText().toString();
+//        intent.putExtra(EXTRA_MESSAGE, message);
+//        startActivity(intent);
+//    }
 
 
     public String getQuotes()
