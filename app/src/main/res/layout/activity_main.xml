@@ -20,12 +20,11 @@
 
     <TextView
         android:id="@+id/m_text"
-        android:layout_marginTop="200dp"
-        android:textAlignment="textEnd"
-        android:textSize="25dp"
-        android:textColor="#111111"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
         android:text="Sample Hello Hi sdjajsfhasf"
-        />
+        android:textAlignment="center"
+        android:textColor="#111111"
+        android:textSize="25dp" />
 </RelativeLayout>

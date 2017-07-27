@@ -19,26 +19,30 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
     private EditText editText = null;
-    private Context mConetxt = null;
+    private Context mContext = null;
     private TextView mTextView = null;
+    private String data = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //editText = (EditText) findViewById(R.id.editText);
         mTextView = (TextView)findViewById(R.id.m_text);
-        mConetxt = getApplicationContext();
+        mContext = getApplicationContext();
 
 
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="http://quotesondesign.com/wp-json/posts?&filter[posts_per_page]=10";
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -46,7 +50,18 @@ public class MainActivity extends AppCompatActivity {
                         //JSONParser parser = new JSONParser();
                         //JSONObject json = (JSONObject) parser.parse(stringToParse);
                         // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: "+ response.substring(0,100));
+                        data =response.substring(0,300);
+                        Pattern p = Pattern.compile("\\\\u(\\p{XDigit}{4})");
+                        Matcher m = p.matcher(data);
+                        StringBuffer buf = new StringBuffer(data.length());
+                        while (m.find()) {
+                            String ch = String.valueOf((char) Integer.parseInt(m.group(1), 16));
+                            m.appendReplacement(buf, Matcher.quoteReplacement(ch));
+                        }
+                        int x = buf.indexOf("<p>");
+                        int y = buf.indexOf("/p>");
+                        mTextView.setText("        " + buf.substring(x+3,y-2));
+                       // mTextView.setText("Response is: "+ response.substring(0,100));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -54,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
                 mTextView.setText("That didn't work! " +error.toString());
             }
         });
+
+
+
+
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
@@ -61,17 +80,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     /** Called when the user taps the Send button */
-//    public void sendMessage(View view) {
-//        Intent intent = new Intent(this, DisplayMessageActivity.class);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
-//        startActivity(intent);
-//    }
-
-
-    public String getQuotes()
-    {
-        HttpURLConnection connection = HttpURLConnection
-        return "";
+    public void sendMessage(View view) {
+        Intent intent = new Intent(this, DisplayMessageActivity.class);
+        String message = editText.getText().toString();
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
+
+
+//    public String getQuotes()
+//    {
+//        HttpURLConnection connection = HttpURLConnection
+//        return "";
+//    }
 }
