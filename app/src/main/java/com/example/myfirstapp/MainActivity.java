@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         int x = buf.indexOf("<p>");
                         int y = buf.indexOf("/p>");
-                        mTextView.setText("        " + buf.substring(x+3,y-2));
+                        mTextView.setText("         " + buf.substring(x+3,y-2));
                        // mTextView.setText("Response is: "+ response.substring(0,100));
                     }
                 }, new Response.ErrorListener() {
