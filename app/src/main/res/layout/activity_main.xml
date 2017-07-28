@@ -7,24 +7,22 @@
     tools:context="com.example.myfirstapp.MainActivity">
 
 
-    <ak.sh.ay.oblique.ObliqueView
-        android:id="@+id/obliqueView"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/q1"
-        app:ending_slant_angle="0"
-        app:starting_slant_angle="30"
-
-         />
-
     <TextView
         android:id="@+id/m_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:text="Sample Hello Hi sdjajsfhasf"
-        android:textAlignment="center"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:fontFamily="cursive"
+        android:text="Quotes here !!"
+        android:textAlignment="viewStart"
         android:textColor="#111111"
-        android:textSize="25dp" />
+        android:textSize="18sp" />
+
+    <ListView
+        android:id="@+id/m_ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/m_text"
+        android:layout_margin="8dp" />
+
 </RelativeLayout>
