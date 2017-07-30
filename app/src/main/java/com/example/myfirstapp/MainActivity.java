@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,39 +24,64 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
-    private EditText editText = null;
-    private Context mContext = null;
-    private TextView mTextView = null;
-    private String data = "";
-    private String TAG = "myapp";
-    ArrayList<String> items = null;
-    //JSONObject jObj = new JSONObject();
+
+      private String TAG = "myapp :";
+      private Context mContext = null;
+      private TextView mTextView = null;
+        private String data = "";
+
+        ArrayList<String> quotes = null;
+        ArrayList<String> authors = null;
+        JSONObject jObj = new JSONObject();
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mTextView = (TextView)findViewById(R.id.m_text);
+       // setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_card_view);
+        Log.v(TAG, "Step1");
+        mTextView = (TextView) findViewById(R.id.text1);
         mContext = getApplicationContext();
-        items = new ArrayList<String> ();
 
-        final QuotesAdapter quotesAdapter = new QuotesAdapter(items, mContext);
-        ListView listView = (ListView) findViewById(R.id.m_ListView);
-        listView.setAdapter(quotesAdapter);
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        Log.v(TAG, "Step2");
+        mRecyclerView.setHasFixedSize(true);
+        Log.v(TAG, "Step3");
+        mLayoutManager = new LinearLayoutManager(this);
+        Log.v(TAG, "Step4");
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        Log.v(TAG, "Step5");
+
+
+        // Code to Add an item with default animation
+        //((MyRecyclerViewAdapter) mAdapter).addItem(obj, index);
+
+        // Code to remove an item with default animation
+        //((MyRecyclerViewAdapter) mAdapter).deleteItem(index);
+
+
+
+        quotes = new ArrayList<String>();
+        authors = new ArrayList<String>();
+
+       // final QuotesAdapter quotesAdapter = new QuotesAdapter(quotes,authors, mContext);
+       // ListView listView = (ListView) findViewById(R.id.m_ListView);
+       // listView.setAdapter(quotesAdapter);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://quotesondesign.com/wp-json/posts?&filter[posts_per_page]=10";
+        String url ="http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=10";
+        //http://quotesondesign.com/wp-json/posts?filter[s]=life&filter[posts_per_page]=10  -->use this for searching a particular keyword oriented quote
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -63,17 +90,22 @@ public class MainActivity extends AppCompatActivity {
 
                         // Display the first 500 characters of the response string.
                         data = response;
-                        Log.v(TAG, "jobj  :"+data);
+                        Log.v(TAG, "jobj  :" + data);
                         try {
 
                             JSONArray jsonArray = new JSONArray(response);
                             int i = jsonArray.length();
-                            for(int x=0;x<=i;x++){
+                            for (int x = 0; x <= i; x++) {
 
                                 JSONObject jObj = jsonArray.getJSONObject(x);
+
                                 try {
-                                    items.add(jObj.getString("content"));
-                                    Log.v(TAG, "jobj  :"+jObj.getString("content"));
+                                    String parsedQuote = jObj.getString("content").replaceAll("</p>", "");
+                                    parsedQuote = parsedQuote.replaceAll("<p>", "");
+                                    quotes.add(parsedQuote);
+                                    authors.add(jObj.getString("title"));
+                                    Log.v(TAG, "jobj  :" + jObj.getString("content"));
+                                    Log.v(TAG, "jobj  :" + jObj.getString("title"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -84,7 +116,12 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        quotesAdapter.notifyDataSetChanged();
+                        mAdapter = new MyRecyclerViewAdapter(getDataSet(quotes,authors));
+                        Log.v(TAG, "Step6");
+                        mRecyclerView.setAdapter(mAdapter);
+                        Log.v(TAG, "Step7");
+
+//                        quotesAdapter.notifyDataSetChanged();
 
 
 //                        Pattern p = Pattern.compile("\\\\u(\\p{XDigit}{4})");
@@ -98,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
 //                        int y = buf.indexOf("/p>");
 //                        mTextView.setText("Daily Quotes");
 //                        Log.v(TAG, "size  :"+buf.toString());
-//                        items.add(buf.substring(x+3,y-2));
-//                        Log.v(TAG, "size  :"+items.size());
+//                        quotes.add(buf.substring(x+3,y-2));
+//                        Log.v(TAG, "size  :"+quotes.size());
 //                        mTextViewFGGGText("Response is: "+ response.substring(0,100));
 
 
@@ -110,29 +147,46 @@ public class MainActivity extends AppCompatActivity {
                 mTextView.setText("That didn't work! " +error.toString());
             }
         });
-
-
-// Add the request to the RequestQueue.
+//
+//
+//// Add the request to the RequestQueue.
         queue.add(stringRequest);
 
 
 
+                    }
 
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+//                .MyClickListener() {
+//            @Override
+//            public void onItemClick(int position, View v) {
+//                Log.i(TAG , " Clicked on Item " + position);
+//            }
+//        });
     }
 
 
-    /** Called when the user taps the Send button */
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+    private ArrayList<DataObject> getDataSet(ArrayList<String> q, ArrayList<String> a) {
+        ArrayList results = new ArrayList<DataObject>();
+        for (int index = 0; index < q.size(); index++) {
+            Log.v(TAG, "getDataSet index: " + index);
+            DataObject obj = new DataObject(q.get(index),
+                    a.get(index));
+            results.add(index, obj);
+        }
+        return results;
     }
 
 
-//    public String getQuotes()
-//    {
-//        HttpURLConnection connection = HttpURLConnection
-//        return "";
-//    }
+
+
 }
+
+
+

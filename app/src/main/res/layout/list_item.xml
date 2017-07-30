@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="80dp"
+    android:elevation="10dp"
+
+    >
     <TextView
         android:id="@+id/quotes"
-        android:text="Sample...."
+        android:text="Quote...."
         android:textSize="25sp"
         android:layout_height="0dp"
         android:fontFamily="cursive"
@@ -13,11 +16,11 @@
         android:layout_width="match_parent"/>
     <TextView
         android:layout_weight="1"
-        android:id="@+id/author"
-        android:text="source.."
+        android:id="@+id/authors"
+        android:text="author.."
         android:fontFamily="cursive"
-        android:textSize="25sp"
-        android:textColor="#94323d"
+        android:textSize="15sp"
+        android:textColor="#5b4c4e"
         android:layout_height="0dp"
         android:layout_width="match_parent"/>
 </LinearLayout>

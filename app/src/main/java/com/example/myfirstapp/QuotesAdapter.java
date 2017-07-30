@@ -14,25 +14,27 @@ import java.util.ArrayList;
  */
 
 public class QuotesAdapter extends BaseAdapter {
-    private ArrayList<String> items = null;
+    private ArrayList<String> quotes = null;
+    private ArrayList<String> authors = null;
     private Context mContext = null;
     private LayoutInflater mLayoutInflator = null;
 
-    public QuotesAdapter(ArrayList<String> a, Context b)
+    public QuotesAdapter(ArrayList<String> q,ArrayList<String> a,Context b)
     {
-        this.items = a;
+        this.quotes = q;
+        this.authors = a;
         this.mContext = b;
         this.mLayoutInflator = LayoutInflater.from(mContext);
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return quotes.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return items.get(position);
+        return quotes.get(position);
     }
 
     @Override
@@ -46,11 +48,11 @@ public class QuotesAdapter extends BaseAdapter {
         convertView =  mLayoutInflator.inflate(R.layout.list_item, null);
 
         TextView quotes = (TextView)convertView.findViewById(R.id.quotes);
-        TextView author = (TextView)convertView.findViewById(R.id.author);
+        TextView authors = (TextView)convertView.findViewById(R.id.authors);
 
 
-        quotes.setText(items.get(position));
-        author.setText("position : "+position);
+        quotes.setText(this.quotes.get(position));
+        authors.setText("Author : "+ this.authors.get(position));
 
         return convertView;
     }

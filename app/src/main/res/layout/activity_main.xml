@@ -19,10 +19,13 @@
         android:textSize="18sp" />
 
     <ListView
+
         android:id="@+id/m_ListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/m_text"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+
+        />
 
 </RelativeLayout>
