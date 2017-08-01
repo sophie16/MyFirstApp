@@ -31,130 +31,48 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
 
-      private String TAG = "myapp :";
-      private Context mContext = null;
-      private TextView mTextView = null;
-        private String data = "";
+    private String TAG = "myapp :";
+    private Context mContext = null;
+    private TextView mTextView = null;
+    private String data = "";
 
-        ArrayList<String> quotes = null;
-        ArrayList<String> authors = null;
-        JSONObject jObj = new JSONObject();
-
+    private ArrayList<DataObject> mArray = new ArrayList<DataObject>();
+    private DownloadQuotes downloadQuotes;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_main);
         setContentView(R.layout.activity_card_view);
-        Log.v(TAG, "Step1");
-        mTextView = (TextView) findViewById(R.id.text1);
+
         mContext = getApplicationContext();
-
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        Log.v(TAG, "Step2");
         mRecyclerView.setHasFixedSize(true);
-        Log.v(TAG, "Step3");
         mLayoutManager = new LinearLayoutManager(this);
-        Log.v(TAG, "Step4");
         mRecyclerView.setLayoutManager(mLayoutManager);
-        Log.v(TAG, "Step5");
+        Log.v(TAG, "LayoutManager set");
+
+        ArrayList<String> q = new ArrayList<String>();
+        ArrayList<String> a = new ArrayList<String>();
+        q.add("Don't raise your voice, improve your argument");
+        a.add("Harvey Spector");
+        mArray=getDataSet(q,a);
+        Log.v(TAG, "Array initialized");
+
+        mAdapter = new MyRecyclerViewAdapter(mArray);
+        Log.v(TAG, "Adapter initialized");
+
+        mRecyclerView.setAdapter(mAdapter);
+        Log.v(TAG, "Adapter plugged in- Here we go");
+        downloadQuotes = new DownloadQuotes(mContext,this,mArray,mAdapter);
+        downloadQuotes.execute();
 
 
-        // Code to Add an item with default animation
-        //((MyRecyclerViewAdapter) mAdapter).addItem(obj, index);
-
-        // Code to remove an item with default animation
-        //((MyRecyclerViewAdapter) mAdapter).deleteItem(index);
-
-
-
-        quotes = new ArrayList<String>();
-        authors = new ArrayList<String>();
-
-       // final QuotesAdapter quotesAdapter = new QuotesAdapter(quotes,authors, mContext);
-       // ListView listView = (ListView) findViewById(R.id.m_ListView);
-       // listView.setAdapter(quotesAdapter);
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=10";
-        //http://quotesondesign.com/wp-json/posts?filter[s]=life&filter[posts_per_page]=10  -->use this for searching a particular keyword oriented quote
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        // Display the first 500 characters of the response string.
-                        data = response;
-                        Log.v(TAG, "jobj  :" + data);
-                        try {
-
-                            JSONArray jsonArray = new JSONArray(response);
-                            int i = jsonArray.length();
-                            for (int x = 0; x <= i; x++) {
-
-                                JSONObject jObj = jsonArray.getJSONObject(x);
-
-                                try {
-                                    String parsedQuote = jObj.getString("content").replaceAll("</p>", "");
-                                    parsedQuote = parsedQuote.replaceAll("<p>", "");
-                                    quotes.add(parsedQuote);
-                                    authors.add(jObj.getString("title"));
-                                    Log.v(TAG, "jobj  :" + jObj.getString("content"));
-                                    Log.v(TAG, "jobj  :" + jObj.getString("title"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        mAdapter = new MyRecyclerViewAdapter(getDataSet(quotes,authors));
-                        Log.v(TAG, "Step6");
-                        mRecyclerView.setAdapter(mAdapter);
-                        Log.v(TAG, "Step7");
-
-//                        quotesAdapter.notifyDataSetChanged();
-
-
-//                        Pattern p = Pattern.compile("\\\\u(\\p{XDigit}{4})");
-//                        Matcher m = p.matcher(data);
-//                        StringBuffer buf = new StringBuffer(data.length());
-//                        while (m.find()) {
-//                            String ch = String.valueOf((char) Integer.parseInt(m.group(1), 16));
-//                            m.appendReplacement(buf, Matcher.quoteReplacement(ch));
-//                        }
-//                        int x = buf.indexOf("<p>");
-//                        int y = buf.indexOf("/p>");
-//                        mTextView.setText("Daily Quotes");
-//                        Log.v(TAG, "size  :"+buf.toString());
-//                        quotes.add(buf.substring(x+3,y-2));
-//                        Log.v(TAG, "size  :"+quotes.size());
-//                        mTextViewFGGGText("Response is: "+ response.substring(0,100));
-
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work! " +error.toString());
-            }
-        });
-//
-//
-//// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-
-
-                    }
+    }
 
 
 
@@ -162,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
 //        ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
 //                .MyClickListener() {
 //            @Override
@@ -172,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private ArrayList<DataObject> getDataSet(ArrayList<String> q, ArrayList<String> a) {
+    public ArrayList<DataObject> getDataSet(ArrayList<String> q, ArrayList<String> a) {
         ArrayList results = new ArrayList<DataObject>();
         for (int index = 0; index < q.size(); index++) {
             Log.v(TAG, "getDataSet index: " + index);
