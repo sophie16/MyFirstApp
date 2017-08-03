@@ -1,5 +1,7 @@
 package com.example.myfirstapp;
 
+import android.media.Image;
+
 /**
  * Created by Asus on 30-07-2017.
  */
@@ -8,10 +10,12 @@ public class DataObject {
 
     private String mText1;
     private String mText2;
+    private String mImageURL;
 
-    DataObject (String text1, String text2){
+    DataObject (String text1, String text2, String imageURL){
         mText1 = text1;
         mText2 = text2;
+        mImageURL = imageURL;
     }
 
 
@@ -30,4 +34,13 @@ public class DataObject {
     public void setmText2(String mText2) {
         this.mText2 = mText2;
     }
+
+    public String getmImageURL() {
+        return mImageURL;
+    }
+
+    public void setmImageURL(String mImageURL) {
+        this.mImageURL = mImageURL;
+    }
+
 }

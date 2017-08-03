@@ -24,31 +24,35 @@ import java.util.ArrayList;
  */
 
 
-public class DownloadQuotes extends AsyncTask{
+public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
 
-    private        String TAG = "myapp async :";
+    private String TAG = "myapp async :";
 
-    private        Context mContext ;
-    private        ArrayList<DataObject> mArray ;
-    private        MainActivity mainActivity;
-    private        RecyclerView.Adapter mAdapter;
 
-    private        ArrayList<String> quotes = new ArrayList<String>();
-    private        ArrayList<String> authors = new ArrayList<String>();
-    private        RequestQueue queue;
-    private        String url ="http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=10";
+    private ArrayList<DataObject> mArray;
+    private MainActivity mainActivity;
+    private RecyclerView.Adapter mAdapter;
+
+    private ArrayList<String> quotes = new ArrayList<String>();
+    private ArrayList<String> authors = new ArrayList<String>();
+    private ArrayList<String> images = new ArrayList<>();
+    private RequestQueue queue;
+    private String url = "http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=10";
     //http://quotesondesign.com/wp-json/posts?filter[s]=life&filter[posts_per_page]=10  -->use this for searching a particular keyword oriented quote
 
-    public DownloadQuotes(Context mContext, MainActivity mainActivity, ArrayList<DataObject> mArray,RecyclerView.Adapter mAdapter){
-        this.mContext = mContext;
+
+
+    public DownloadQuotes(Context mContext, MainActivity mainActivity, ArrayList<String> images, ArrayList<DataObject> mArray, RecyclerView.Adapter mAdapter) {
+
         this.mainActivity = mainActivity;
         this.mArray = mArray;
-        this.mAdapter=mAdapter;
-        this.queue=Volley.newRequestQueue(mContext);
+        this.images = images;
+        this.mAdapter = mAdapter;
+        this.queue = Volley.newRequestQueue(mContext);
     }
 
     @Override
-    protected Object doInBackground(Object[] params) {
+    protected ArrayList<DataObject> doInBackground(Void... params) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -62,7 +66,7 @@ public class DownloadQuotes extends AsyncTask{
 
                             JSONArray jsonArray = new JSONArray(response);
                             int i = jsonArray.length();
-                            for (int x = 0; x <= i; x++) {
+                            for (int x = 0; x < i; x++) {
 
                                 JSONObject jObj = jsonArray.getJSONObject(x);
 
@@ -79,34 +83,37 @@ public class DownloadQuotes extends AsyncTask{
 
                             }
 
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        mArray.addAll(mainActivity.getDataSet(quotes, authors));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        mArray.addAll(mainActivity.getDataSet(quotes, authors,images));
                         mAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
 
 //// Add the request to the RequestQueue.
         queue.add(stringRequest);
         return null;
-           }
+    }
+
+
+
+
 
     protected void onProgressUpdate(Integer... progress) {
 
     }
 
-    protected void onPostExecute(Long result) {
+
+    protected void onPostExecute(ArrayList<DataObject> result) {
+        super.onPostExecute(result);
+        Log.v(TAG, "Quotes done");
 
     }
-
 
 
 }
