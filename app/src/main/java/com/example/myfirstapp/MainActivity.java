@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String TAG = "myapp :";
 
-    private String imageurl = "https://pixabay.com/api/?key=6072887-ff96fbe049fe5ddaf47bf86b1&per_page=10&q=forest+sunlight+sea+sky&image_type=photo&orientation=horizontal&min_width=2500&min_height=1800&order=popular&category=nature";
+    private String imageurl = "https://pixabay.com/api/?key=6072887-ff96fbe049fe5ddaf47bf86b1&q=forest+sunlight+sea+sky&image_type=photo&orientation=horizontal&min_width=2500&min_height=1800&order=popular&category=nature";
     private ImageView bgimage;
 
     private ArrayList<DataObject> mArray = new ArrayList<DataObject>();
@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         Log.v(TAG, "LayoutManager set");
 
+        OnVerticalScroll onVerticalScroll =new OnVerticalScroll();
+
 
 //        ArrayList<String> q = new ArrayList<String>();
 //        ArrayList<String> a = new ArrayList<String>();
@@ -70,18 +72,17 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         Log.v(TAG, "Adapter plugged in- Here we go");
 
+        mRecyclerView.addOnScrollListener(onVerticalScroll);
+
         Log.v(TAG, "image view in main thread =" + bgimage);
 
         imageLoadTask= new ImageLoadTask(imageurl,bgimage,mContext,images);
-        imageLoadTask.execute();
+        //imageLoadTask.execute();
 
+        downloadQuotes = new DownloadQuotes(mContext,images,mArray,mAdapter);
+       // downloadQuotes.execute();
 
-        downloadQuotes = new DownloadQuotes(mContext,this,images,mArray,mAdapter);
-        downloadQuotes.execute();
-
-
-
-
+        loaddata();
 
     }
 
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<DataObject> getDataSet(ArrayList<String> q, ArrayList<String> a, ArrayList<String> images) {
         ArrayList results = new ArrayList<DataObject>();
-        for (int index = 0; index < q.size(); index++) {
+
+        for (int index = mArray.size(); index < mArray.size()+ q.size(); index++) {
             Log.v(TAG, "getDataSet index: " + index);
             DataObject obj = new DataObject(q.get(index), a.get(index), images.get(index));
             results.add(index, obj);
@@ -112,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
         return results;
     }
 
+    public void loaddata()
+    {
+        imageLoadTask.execute();
+        downloadQuotes.execute();
+
+    }
 
 
 

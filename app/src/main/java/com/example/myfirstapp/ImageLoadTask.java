@@ -2,7 +2,6 @@ package com.example.myfirstapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
@@ -13,16 +12,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -104,7 +98,8 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
     }
 
     @Override
-    protected void onPostExecute(Bitmap result) {
+    protected void onPostExecute(Bitmap result)
+    {
         Log.v(TAG, "Images done");
     }
 }

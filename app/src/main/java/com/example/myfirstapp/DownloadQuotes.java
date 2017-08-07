@@ -1,5 +1,6 @@
 package com.example.myfirstapp;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,9 +43,9 @@ public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
 
 
 
-    public DownloadQuotes(Context mContext, MainActivity mainActivity, ArrayList<String> images, ArrayList<DataObject> mArray, RecyclerView.Adapter mAdapter) {
+    public DownloadQuotes(Context mContext, ArrayList<String> images, ArrayList<DataObject> mArray, RecyclerView.Adapter mAdapter) {
 
-        this.mainActivity = mainActivity;
+        this.mainActivity = new MainActivity();
         this.mArray = mArray;
         this.images = images;
         this.mAdapter = mAdapter;
@@ -86,8 +87,9 @@ public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        mArray.addAll(mainActivity.getDataSet(quotes, authors,images));
+                        mArray.addAll(mainActivity.getDataSet(quotes,authors,images));
                         mAdapter.notifyDataSetChanged();
+                        Log.v(TAG, "adapter notified");
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -109,11 +111,12 @@ public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
     }
 
 
-    protected void onPostExecute(ArrayList<DataObject> result) {
-        super.onPostExecute(result);
+    @Override
+    protected void onPostExecute(ArrayList result)
+    {
         Log.v(TAG, "Quotes done");
-
     }
+
 
 
 }
