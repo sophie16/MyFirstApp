@@ -11,6 +11,11 @@ import android.widget.Toast;
 public class OnVerticalScroll extends RecyclerView.OnScrollListener {
 
     private String TAG = "myapp :";
+    private MainActivity mainActivity;
+
+    public OnVerticalScroll (MainActivity mainActivity){
+        this.mainActivity=mainActivity;
+    }
 
     @Override
     public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -51,9 +56,16 @@ public class OnVerticalScroll extends RecyclerView.OnScrollListener {
     public void onScrolledToBottom(int dy,RecyclerView recyclerView) {
         int x = dy;
         x = recyclerView.getAdapter().getItemCount();
+
         Log.v(TAG, "onScrolledToBottom("+x+")");
 
-
+        if (x<=100)
+        mainActivity.loaddata();
+        else
+        {
+            mainActivity.emptydata();
+            mainActivity.loaddata();
+        }
 
     }
 

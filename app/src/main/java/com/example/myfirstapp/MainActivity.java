@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         Log.v(TAG, "LayoutManager set");
 
-        OnVerticalScroll onVerticalScroll =new OnVerticalScroll();
+        OnVerticalScroll onVerticalScroll =new OnVerticalScroll(this);
 
 
 //        ArrayList<String> q = new ArrayList<String>();
@@ -76,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
         Log.v(TAG, "image view in main thread =" + bgimage);
 
-        imageLoadTask= new ImageLoadTask(imageurl,bgimage,mContext,images);
-        //imageLoadTask.execute();
+
+
 
         downloadQuotes = new DownloadQuotes(mContext,images,mArray,mAdapter);
-       // downloadQuotes.execute();
+
 
         loaddata();
 
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<DataObject> getDataSet(ArrayList<String> q, ArrayList<String> a, ArrayList<String> images) {
         ArrayList results = new ArrayList<DataObject>();
 
-        for (int index = mArray.size(); index < mArray.size()+ q.size(); index++) {
+        for (int index = 0; index < q.size(); index++) {
             Log.v(TAG, "getDataSet index: " + index);
             DataObject obj = new DataObject(q.get(index), a.get(index), images.get(index));
             results.add(index, obj);
@@ -116,9 +116,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void loaddata()
     {
+        imageLoadTask= new ImageLoadTask(imageurl,bgimage,mContext,images);
         imageLoadTask.execute();
+        downloadQuotes = new DownloadQuotes(mContext,images,mArray,mAdapter);
         downloadQuotes.execute();
 
+    }
+
+    public void emptydata()
+    {
+        mArray.clear();
     }
 
 
