@@ -14,6 +14,7 @@ public class OnVerticalScroll extends RecyclerView.OnScrollListener {
     private MainActivity mainActivity;
 
     public OnVerticalScroll (MainActivity mainActivity){
+
         this.mainActivity=mainActivity;
     }
 

@@ -30,17 +30,18 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
     private String TAG = "myapp ImageLoadTask";
     private ImageView imageView;
     private RequestQueue queue;
-   // private Bitmap myBitmap;
+    private MainActivity mainActivity;
     private  Context mContext;
     private ArrayList<String> images = new ArrayList<>();
 
 
-    public ImageLoadTask(String url, ImageView imageView, Context mContext, ArrayList<String> images) {
+    public ImageLoadTask(String url, ImageView imageView, Context mContext, ArrayList<String> images, MainActivity mainActivity) {
         this.url = url;
         this.imageView = imageView;
         this.mContext = mContext;
         this.queue= Volley.newRequestQueue(mContext);
         this.images=images;
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -50,9 +51,6 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-                        // Display the first 500 characters of the response string.
-
 
                         try {
 
@@ -69,9 +67,6 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
                                 Log.v(TAG, "image layout ="+ imageView);
 
                                 images.add(imageURL);
-                               // Picasso.with(mContext).load(imageURL).into(imageView);
-
-
 
                             }
 
@@ -79,8 +74,7 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
                                 e.printStackTrace();
                             }
 
-                        //imageView.setImageBitmap(myBitmap);
-
+                            mainActivity.loaddata();
                     }
                 }, new Response.ErrorListener() {
             @Override

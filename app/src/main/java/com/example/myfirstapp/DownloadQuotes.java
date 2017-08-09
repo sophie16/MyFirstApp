@@ -43,9 +43,9 @@ public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
 
 
 
-    public DownloadQuotes(Context mContext, ArrayList<String> images, ArrayList<DataObject> mArray, RecyclerView.Adapter mAdapter) {
+    public DownloadQuotes(Context mContext,MainActivity mainActivity, ArrayList<String> images, ArrayList<DataObject> mArray, RecyclerView.Adapter mAdapter) {
 
-        this.mainActivity = new MainActivity();
+        this.mainActivity = mainActivity;
         this.mArray = mArray;
         this.images = images;
         this.mAdapter = mAdapter;
@@ -116,6 +116,7 @@ public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
     {
         Log.v(TAG, "Quotes done");
     }
+
 
 
 

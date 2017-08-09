@@ -78,7 +78,7 @@ public class MyRecyclerViewAdapter extends RecyclerView
         holder.label.setText(mDataset.get(position).getmText1());
         holder.dateTime.setText(mDataset.get(position).getmText2());
         Picasso.with(MainActivity.mContext).load(mDataset.get(position).getmImageURL()).into(holder.bgimage);
-       // holder.bgimage.setImageResource(mDataset.get(position).getmImage());
+
     }
 
     public void addItem(DataObject dataObj, int index) {
