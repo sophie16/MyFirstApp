@@ -3,6 +3,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 
 
@@ -16,6 +17,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import java.util.ArrayList;
 
@@ -72,10 +75,8 @@ public class DownloadQuotes extends AsyncTask<Void, Void, ArrayList> {
                                 JSONObject jObj = jsonArray.getJSONObject(x);
 
                                 try {
-                                    String parsedQuote = jObj.getString("content").replaceAll("</p>", "");
-                                    parsedQuote = parsedQuote.replaceAll("<p>", "");
-                                    quotes.add(parsedQuote);
-                                    authors.add(jObj.getString("title"));
+                                    quotes.add(Jsoup.clean(jObj.getString("content"), Whitelist.none()));
+                                    authors.add(Jsoup.clean(jObj.getString("title"), Whitelist.none()));
                                     Log.v(TAG, "jobj  :" + jObj.getString("content"));
                                     Log.v(TAG, "jobj  :" + jObj.getString("title"));
                                     } catch (JSONException e) {
